@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ey.dto.request.RegisterDoctorRequest;
 import com.ey.dto.response.DoctorResponse;
 import com.ey.enums.Role;
+import com.ey.enums.Specialization;
 import com.ey.exception.ResourceNotFoundException;
 import com.ey.mapper.DoctorMapper;
 import com.ey.model.Doctor;
@@ -21,13 +22,16 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
+    private final DoctorMapper doctorMapper;
     private final PasswordEncoder passwordEncoder;
 
     public DoctorServiceImpl(DoctorRepository doctorRepository,
                              UserRepository userRepository,
+                             DoctorMapper doctorMapper,
                              PasswordEncoder passwordEncoder) {
         this.doctorRepository = doctorRepository;
         this.userRepository = userRepository;
+        this.doctorMapper = doctorMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -38,33 +42,35 @@ public class DoctorServiceImpl implements DoctorService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.DOCTOR);
-
         userRepository.save(user);
 
-        Doctor doctor = new Doctor();
-        doctor.setName(request.getName());
-        doctor.setSpecialization(request.getSpecialization());
-        doctor.setLocation(request.getLocation());
-        doctor.setPhone(request.getPhone());
-        doctor.setAvailableFrom(request.getAvailableFrom());
-        doctor.setAvailableTo(request.getAvailableTo());
-        doctor.setUser(user);
+        Doctor doctor = doctorMapper.toEntity(request, user);
+        doctorRepository.save(doctor);
 
-        return DoctorMapper.toResponse(doctorRepository.save(doctor));
+        return doctorMapper.toResponse(doctor);
     }
 
     @Override
     public DoctorResponse getDoctorById(Long doctorId) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
-        return DoctorMapper.toResponse(doctor);
+        return doctorMapper.toResponse(doctor);
+    }
+
+    @Override
+    public List<DoctorResponse> getAllDoctors() {
+        return doctorRepository.findAll()
+                .stream()
+                .map(doctorMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<DoctorResponse> getDoctorsBySpecialization(String specialization) {
-        return doctorRepository.findBySpecializationIgnoreCase(specialization)
+        Specialization specEnum = Specialization.valueOf(specialization.trim().toUpperCase());
+        return doctorRepository.findBySpecialization(specEnum)
                 .stream()
-                .map(DoctorMapper::toResponse)
+                .map(doctorMapper::toResponse)
                 .collect(Collectors.toList());
     }
 

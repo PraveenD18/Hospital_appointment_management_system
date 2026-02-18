@@ -1,15 +1,14 @@
 package com.ey.dto.response;
 
-import java.time.LocalTime;
-
 public class DoctorResponse {
-	private Long doctorId;
+
+    private Long doctorId;
     private String name;
     private String specialization;
     private String location;
     private String phone;
-    private LocalTime availableFrom;
-    private LocalTime availableTo;
+    private String availableFrom;
+    private String availableTo;
     private boolean active;
 	public Long getDoctorId() {
 		return doctorId;
@@ -41,16 +40,16 @@ public class DoctorResponse {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public LocalTime getAvailableFrom() {
+	public String getAvailableFrom() {
 		return availableFrom;
 	}
-	public void setAvailableFrom(LocalTime availableFrom) {
+	public void setAvailableFrom(String availableFrom) {
 		this.availableFrom = availableFrom;
 	}
-	public LocalTime getAvailableTo() {
+	public String getAvailableTo() {
 		return availableTo;
 	}
-	public void setAvailableTo(LocalTime availableTo) {
+	public void setAvailableTo(String availableTo) {
 		this.availableTo = availableTo;
 	}
 	public boolean isActive() {
@@ -60,5 +59,5 @@ public class DoctorResponse {
 		this.active = active;
 	}
     
-
+    
 }

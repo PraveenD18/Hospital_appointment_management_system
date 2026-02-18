@@ -2,115 +2,117 @@ package com.ey.model;
 
 import java.time.LocalTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-
+import com.ey.enums.City;
+import com.ey.enums.Specialization;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "doctors")
 public class Doctor {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long doctorId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "doctor_id")
+    private Long doctorId;
 
-	@Column(nullable = false)
-	private String name;
+    @Column(nullable = false, length = 100)
+    private String name;
 
-	@Column(nullable = false)
-	private String specialization;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private Specialization specialization;
 
-	private String location;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private City location;
 
-	private String phone;
+    @Column(length = 20)
+    private String phone;
 
-	private LocalTime availableFrom;
+    @Column(name = "available_from", nullable = false)
+    private LocalTime availableFrom;
 
-	private LocalTime availableTo;
+    @Column(name = "available_to", nullable = false)
+    private LocalTime availableTo;
 
-	private boolean active = true;
+    @Column(nullable = false)
+    private boolean active = true;
 
-	@OneToOne
-	@JoinColumn(name = "user_id", nullable = false, unique = true)
-	private User user;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
-	public Long getDoctorId() {
-		return doctorId;
-	}
+    // ---------------- Getters & Setters ----------------
 
-	public void setDoctorId(Long doctorId) {
-		this.doctorId = doctorId;
-	}
+    public Long getDoctorId() {
+        return doctorId;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setDoctorId(Long doctorId) {
+        this.doctorId = doctorId;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getSpecialization() {
-		return specialization;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setSpecialization(String specialization) {
-		this.specialization = specialization;
-	}
+    public Specialization getSpecialization() {
+        return specialization;
+    }
 
-	public String getLocation() {
-		return location;
-	}
+    public void setSpecialization(Specialization specialization) {
+        this.specialization = specialization;
+    }
 
-	public void setLocation(String location) {
-		this.location = location;
-	}
+    public City getLocation() {
+        return location;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public void setLocation(City location) {
+        this.location = location;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public LocalTime getAvailableFrom() {
-		return availableFrom;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-	public void setAvailableFrom(LocalTime availableFrom) {
-		this.availableFrom = availableFrom;
-	}
+    public LocalTime getAvailableFrom() {
+        return availableFrom;
+    }
 
-	public LocalTime getAvailableTo() {
-		return availableTo;
-	}
+    public void setAvailableFrom(LocalTime availableFrom) {
+        this.availableFrom = availableFrom;
+    }
 
-	public void setAvailableTo(LocalTime availableTo) {
-		this.availableTo = availableTo;
-	}
+    public LocalTime getAvailableTo() {
+        return availableTo;
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    public void setAvailableTo(LocalTime availableTo) {
+        this.availableTo = availableTo;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public boolean isActive() {
+        return active;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

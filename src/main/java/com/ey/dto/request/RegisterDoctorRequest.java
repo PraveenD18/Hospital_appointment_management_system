@@ -1,16 +1,11 @@
 package com.ey.dto.request;
-
-import java.time.LocalTime;
-
 public class RegisterDoctorRequest {
-	private String name;
-    private String specialization;
-    private String location;
+    private String name;
+    private String specialization;   
+    private String location;         
     private String phone;
-    private LocalTime availableFrom;
-    private LocalTime availableTo;
-
-    
+    private String availableFrom;
+    private String availableTo;
     private String email;
     private String password;
 	public String getName() {
@@ -37,16 +32,16 @@ public class RegisterDoctorRequest {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public LocalTime getAvailableFrom() {
+	public String getAvailableFrom() {
 		return availableFrom;
 	}
-	public void setAvailableFrom(LocalTime availableFrom) {
+	public void setAvailableFrom(String availableFrom) {
 		this.availableFrom = availableFrom;
 	}
-	public LocalTime getAvailableTo() {
+	public String getAvailableTo() {
 		return availableTo;
 	}
-	public void setAvailableTo(LocalTime availableTo) {
+	public void setAvailableTo(String availableTo) {
 		this.availableTo = availableTo;
 	}
 	public String getEmail() {
@@ -60,7 +55,5 @@ public class RegisterDoctorRequest {
 	}
 	public void setPassword(String password) {
 		this.password = password;
-	}
-    
-
+	}   
 }
