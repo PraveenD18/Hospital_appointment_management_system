@@ -2,6 +2,8 @@ package com.ey.dto.request;
 
 import java.time.LocalDateTime;
 
+import com.ey.enums.AppointmentType;
+
 public class AppointmentRequest {
 	private Long doctorId;
     private Long patientId;
@@ -24,5 +26,4 @@ public class AppointmentRequest {
 	public void setAppointmentDateTime(LocalDateTime appointmentDateTime) {
 		this.appointmentDateTime = appointmentDateTime;
 	}
-
 }

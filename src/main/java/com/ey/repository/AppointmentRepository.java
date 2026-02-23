@@ -6,16 +6,17 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.ey.enums.AppointmentStatus;
 import com.ey.model.Appointment;
 import com.ey.model.Doctor;
 
-public interface AppointmentRepository extends JpaRepository<Appointment, Long>{
-	Optional<Appointment> findByDoctorAndAppointmentDateTime(
-            Doctor doctor, LocalDateTime appointmentDateTime);
+public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
+	Optional<Appointment> findByDoctorAndAppointmentDateTime(Doctor doctor, LocalDateTime appointmentDateTime);
 
-    List<Appointment> findByDoctor_DoctorId(Long doctorId);
+	List<Appointment> findByDoctor_DoctorId(Long doctorId);
 
-    List<Appointment> findByPatient_PatientId(Long patientId);
+	List<Appointment> findByPatient_PatientId(Long patientId);
 
+	List<Appointment> findByStatus(AppointmentStatus status);
 
 }

@@ -16,6 +16,7 @@ public class AppointmentMapper {
 		appointment.setDoctor(doctor);
 		appointment.setPatient(patient);
 		appointment.setAppointmentDateTime(request.getAppointmentDateTime());
+		//appointment.setType(request.getType());
 		appointment.setStatus(AppointmentStatus.BOOKED);
 		return appointment;
 	}
