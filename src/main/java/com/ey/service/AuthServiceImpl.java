@@ -1,11 +1,7 @@
 package com.ey.service;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ey.dto.request.LoginRequest;
-import com.ey.dto.response.LoginResponse;
-import com.ey.exception.ResourceNotFoundException;
 import com.ey.model.User;
 import com.ey.repository.UserRepository;
 import com.ey.security.JwtTokenProvider;
@@ -26,33 +22,23 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponse login(LoginRequest request) {
+    public String login(String email, String password) {
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+        // 1. Check if user exists by email
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            throw new RuntimeException("User not found");
         }
 
-        String token = jwtTokenProvider.generateToken(user.getEmail(), user.getRole());
+        // 2. Verify password
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
 
-        LoginResponse response = new LoginResponse();
-        response.setToken(token);
-        response.setRole(user.getRole().name());
-        response.setUserId(user.getUserId());
-
-        return response;
+        // 3. Generate JWT using email + role
+        return jwtTokenProvider.generateToken(
+                user.getEmail(),
+                user.getRole().name()
+        );
     }
-    @Override
-    public void register(LoginRequest request) {
-
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        userRepository.save(user);
-    }
-
-
 }

@@ -1,62 +1,49 @@
 package com.ey.security;
 
-
-import java.security.Key;
-import java.util.Date;
-
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
-import com.ey.enums.Role;
-import io.jsonwebtoken.SignatureAlgorithm;
-
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-
-    private static final String SECRET_KEY =
-            "mySuperSecretKeyForJwtAuthentication1234567890";
-
+    private static final String SECRET_KEY = "mySuperSecretKeyForJwtAuthentication1234567890";
     private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000;
+    private static final String ROLE_CLAIM = "role";
 
-    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
-    public String generateToken(String email, Role role) {
-
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
-
+    public String generateToken(String email, String role) {
         return Jwts.builder()
-                .setSubject(email)
-                .claim("role", role.name())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .subject(email)
+                .claim(ROLE_CLAIM, role) // e.g., "ADMIN" or "PATIENT" (no ROLE_ prefix)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(key)
                 .compact();
-    }
-
-    public String getEmailFromToken(String token) {
-        return parseClaims(token).getSubject();
-    }
-
-    public String getRoleFromToken(String token) {
-        return parseClaims(token).get("role", String.class);
     }
 
     public boolean validateToken(String token) {
         try {
-            parseClaims(token);
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
-        } catch (JwtException | IllegalArgumentException ex) {
+        } catch (Exception ex) {
             return false;
         }
     }
 
-    private Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public String extractUsername(String token) {
+        return Jwts.parser().verifyWith(key).build()
+                .parseSignedClaims(token).getPayload().getSubject();
+    }
+
+    /** NEW: extract single role string from token (e.g., "PATIENT" / "ADMIN" / "DOCTOR"). */
+    public String extractRole(String token) {
+        Object role = Jwts.parser().verifyWith(key).build()
+                .parseSignedClaims(token).getPayload().get(ROLE_CLAIM);
+        return role != null ? role.toString() : null;
     }
 }
-
